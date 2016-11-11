@@ -1,11 +1,15 @@
 {
-  "Manager":"zhangdi02",
-  "BPHead":"gupeiling",
-  "LeadingBP":"sunyudi",
-  "BP":"sunyudi",
-  "LD":"zhangxiaoliang04",
-  "Estaff":"xianghailong",
-  "GM":"lidongmin01",
-  "PGM":"zhuying06",
-  "owner":"chenzhengmin01"
+  "Manager":{"username":"jingwang","password":{"8030":"jingwangpgmtest644","8010":"jingwang8801"}},
+  "BPHead":{"username":"xianghailong","password":{"8030":"xianghailongpgmtest644","8010":"xianghailong8801"}},
+  "LeadingBP":{"username":"gupeiling","password":{"8030":"gupeilingpgmtest655","8010":"gupeiling8801"}},
+  "BP":{"username":"zhenyue","password":{"8030":"zhenyuepgmtest655","8010":"zhenyue8801"}},
+  "LD":{"username":"liubei","password":{"8030":"liubei830","8010":"liubei8801"}},
+  "Estaff":{"username":"xianghailong","password":{"8030":"xianghailongpgmtest644","8010":"xianghailong8801"}},
+  "GM":{"username":"guolangbo","password":{"8030":"guolangbo830","8010":"guolangbo8801"}},
+  "PGM":{"username":"tujing","password":{"8030":"tujing830","8010":"tujing8801"}},
+  "owner":{"username":"chenzhengmin01","password":{"8030":"chenzhengmin01pgmtest644","8010":"chenzhengmin018801"}},
+  "groupHR":{"username":"yinyalin","password":{"8030":"yinyalinpgmtest655","8010":"yinyalin8801"}},
+  "busiHR":{"username":"weina01","password":{"8030":"weina01pgmtest655","8010":"weina018801"}},
+  "prodHR":{"username":"zhangyu17","password":{"8030":"zhangyu17pgmtest655","8010":"zhangyu178801"}},
+  "revBP":{"username":"huanglu05","password":{"8030":"huanglu05pgmtest655","8010":"huanglu058801"}}
 }

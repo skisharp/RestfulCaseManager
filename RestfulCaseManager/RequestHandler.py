@@ -11,6 +11,7 @@ from RestfulCaseManager.Model import Process
 from django import template
 from RestfulCaseManager.Model.Env import Env
 
+
 register = template.Library()
 caseManager = CaseManager()
 
