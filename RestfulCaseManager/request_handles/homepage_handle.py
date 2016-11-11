@@ -65,37 +65,53 @@ def paramtersListHtml(request):
 def manageCase(request):
     getDict = request.GET
 
+    print request.GET
+
     try:
         curPage = int(request.GET.get('curPage', '1'))
         allPage = int(request.GET.get('allPage', '1'))
         pageType = str(request.GET.get('pageType', ''))
+        rowNum = int(request.GET.get('rowNum', 10))
+
+
     except ValueError:
         curPage = 1
         allPage = 1
         pageType = ''
+        searchText = ''
 
     if pageType == 'pageDown':
         curPage += 1
     elif pageType == 'pageUp':
         curPage -= 1
 
-    start_pos = (curPage - 1) * 5
+    start_pos = (curPage - 1) * rowNum
 
     caseCount = 0
     # 根据该模块的case
-    if "module" in getDict.keys():
-        if "order" in getDict.keys():
-            caseList = caseManager.getCaseList(request.GET.get("module"), request.GET.get("order"))
+    if "searchText" not in getDict.keys():
+        if "module" in getDict.keys():
+            if "order" in getDict.keys():
+                caseList = caseManager.getCaseList(request.GET.get("module"), request.GET.get("order"),request.GET.get('rowNum'))
+            else:
+                caseList = caseManager.getCaseList(module=request.GET.get("module"), start_index=start_pos, row_num=rowNum)
         else:
-            caseList = caseManager.getCaseList(module=request.GET.get("module"), start_index=start_pos)
+            caseList = caseManager.getCaseList()
     else:
-        caseList = caseManager.getCaseList()
+        print "homepage_handle"+request.GET.get("module")+request.GET.get('searchText')
+        caseList = caseManager.getSearchCaseList(module=request.GET.get("module"), start_index=start_pos, text=request.GET.get('searchText'))
+
+    caseIdList = []
+    if caseList:
+        for case in caseList:
+            caseIdList.append(case['_id'])
+
 
     if caseList:
         caseCount = caseList.count()
 
-    allPage = caseCount / 5
-    remainPost = caseCount % 5
+    allPage = caseCount / rowNum
+    remainPost = caseCount % rowNum
     if remainPost > 0:
         allPage += 1
 
@@ -104,6 +120,7 @@ def manageCase(request):
                                "caseCount": caseCount,
                                'curPage': curPage,
                                'allPage': allPage,
+                               'rowNum': rowNum,
                                "module": request.GET.get("module")})
 
 

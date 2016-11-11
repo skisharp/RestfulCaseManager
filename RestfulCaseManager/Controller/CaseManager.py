@@ -2,6 +2,7 @@
 import traceback
 import logging
 import pymongo
+import re
 import types
 # 在mongodb中id的class
 from bson.objectid import ObjectId
@@ -50,9 +51,27 @@ class CaseManager(object):
     # 获取case列表
     # module 模块
     # order 根据添加时间进行倒序
-    def getCaseList(self, module='test', order="addTime", start_index=1):
+    def getCaseList(self, module='test', order="addTime", start_index=1, row_num=10):
         try:
-            self.caseList = self.testcases.find({'module': module}).sort(order, pymongo.DESCENDING).limit(5).skip(start_index)
+            self.caseList = self.testcases.find({'module': module}).sort(order, pymongo.DESCENDING).limit(row_num).skip(start_index)
+        except:
+            logging.exception("Error:")
+
+        return self.caseList
+
+    #获取某关键字的case列表
+    def getSearchCaseList(self,module='test',order="addTime",start_index=1,text="test"):
+
+        pattern = re.compile(text)
+        query = {'name':{ '$regex' : pattern },'module':module}
+        print query
+
+        try:
+            #print "CaseManager"+text+module+'{$regex:/获取/}'
+            #self.caseList = self.testcases.find({'name':u'{$regex:/获取/}','module':module}).sort(order, pymongo.DESCENDING).limit(5).skip(start_index)
+            #self.caseList = self.testcases.find({'name':text,'module':module}).sort(order, pymongo.DESCENDING).limit(5).skip(start_index)
+            self.caseList = self.testcases.find(query).sort(order, pymongo.DESCENDING).limit(10).skip(start_index)
+
         except:
             logging.exception("Error:")
 
@@ -117,15 +136,19 @@ class CaseManager(object):
 
         path_module_path =  FileOperation.get_module_file_dir(module=module)
         RunningLogString.logString = RunningLogString.logString + 'Init 文件路径：' + path_module_path + '<br/>'
-
+        # FIXME 搜索路径于添加新路径而使用后必须清理，否则会越来越多并导致崩溃
         sys.path.insert(0, path_module_path)
         CaseInitModule = __import__('CaseInit')
         CaseInitClass = CaseInitModule.CaseInit()
         self.restRequest = CaseInitClass.initCase(module, env)
         RunningLogString.logString = RunningLogString.logString + 'Init 结束'+ '<br/>'
+        # clear the path in tearDown
+        # sys.path.remove(path_module_path)
 
     # 2 运行测试用例
     def run(self, module='test', env='8030', caseId=""):
+        logging.info("module :'" +  module + "', env : '" + env + "', caseId : '" + caseId + "'")
+
         self.conf = ConfigReader.read_conf(module)
         #   得到测试用例列表
         if caseId == "":
@@ -140,6 +163,7 @@ class CaseManager(object):
         from bson.objectid import ObjectId
         batch_id = ObjectId()
 
+        # item is instance of TestcaeBase
         for item in caseObjectList:
             RunningLogString.logString = ''
             runStartTime = datetime.datetime.now()
@@ -147,13 +171,12 @@ class CaseManager(object):
             RunningLogString.logString = RunningLogString.logString + runStartTime.strftime('%c') + '<br/>'
             RunningLogString.logString = RunningLogString.logString + '测试用例名称：'
             RunningLogString.logString = RunningLogString.logString + item.name + '<br>'
-            logging.info('=============开始执行:')
-            logging.info('测试用例名称：')
-            logging.info(item.name)
-            logging.info(item.url)
+            logging.info(u'=============开始执行用例:' + str(item.caseId))
+            logging.info(u'测试用例名称：' + item.name)
+            logging.info(u'测试用例URL：' + item.url)
 
             try:
-                item.run_case(module=module)
+                item.run_case(module=module, env=env) # TestcaseBase.run_case
                 if not item.response:
                     item.actualResult = ''
                     item.response = None
@@ -165,8 +188,9 @@ class CaseManager(object):
                     logging.info("response is nones")
                     RunningLogString.logString = RunningLogString.logString + "运行结果：None<br/>"
                     continue
-                logging.info(item.response.content)
-                RunningLogString.logString = RunningLogString.logString + "运行结果：" + item.response.content + '<br/>'
+                # TODO UTF-8转码
+                logging.info(item.response.content.decode('raw_unicode_escape'))
+                RunningLogString.logString = RunningLogString.logString + "运行结果：" + item.response.content.decode('raw_unicode_escape') + '<br/>'
 
                 # item.response.text type unicode
                 # item.response.content type str
@@ -179,13 +203,13 @@ class CaseManager(object):
                         item.code = item.responseContent_json["code"]
                     except:
                         item.code = ""
-            except:
+            except Exception as ex:
                 RunningLogString.logString = RunningLogString.logString + "运行异常"
                 logging.exception("出现异常：")
             logging.info('得到结果')
             verifyModeClass = ResultVerifyModeFactory.VerifyModeFactory.factory(item)
             verifyModeClass.setActualResult()
-
+            # FIXME 同时判断返回码和内容，则需要再处理
             if type(item.actualResult) is int:
                 if str(item.actualResult) == str(item.expectedResult):
                     item.result = "Pass"
@@ -219,6 +243,11 @@ class CaseManager(object):
         CaseEnderClass = CaseEnderModule.CaseEnder(module, env)
         CaseEnderClass.deleteAllData()
         RunningLogString.logString = RunningLogString.logString + "============运行Teardown结束===========" + '<br/>'
+
+        path_module_path =  FileOperation.get_module_file_dir(module=module)
+        # clear the path in tearDown
+        sys.path.remove(path_module_path)
+
 
     # 执行case 主函数
     def runCase(self, module="Mtool", env="8030", caseId=""):
@@ -343,14 +372,26 @@ class CaseManager(object):
 
     # 得到一个测试用例日志
     def get_result_logging(self, case_id):
-        if isinstance(type(case_id), types.UnicodeType):
-            case_id = ObjectId(case_id)
+        #print(case_id)
+        #if isinstance(type(case_id), types.UnicodeType):
+        #    case_id = ObjectId(case_id)
         log = ''
         try:
-            log = self.result.find_one({"_id": case_id})["loggingString"].encode('utf-8')
-        except Exception:
-            logging.exception("出现异常：")
+            #log = self.result.find_one({"_id": case_id})["loggingString"].encode('utf-8')
+            #print(case_id)
+            record = self.result.find_one({"_id": ObjectId(case_id)})
+            if (record) :
+                log = record["loggingString"].encode('utf-8')
+            else:
+                log = "LOG NOT FOUND."
+            #print(log)
+        except Exception as ex:
+            logging.exception("出现异常：", ex)
             log = '从数据库获取日志出现异常！'
+
+            msg = traceback.format_exc()
+            print("get log from mongdb exception:%s"%(msg))
+
         return log
 
     # # 导入case到DB

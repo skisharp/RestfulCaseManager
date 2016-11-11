@@ -4,6 +4,7 @@ __author__ = 'zhangruixia'
 import json
 import datetime
 import os
+import logging
 
 from jsonpath_rw import parse
 
@@ -42,11 +43,12 @@ class TestcaseBase:
         self.caseId = caseId
 
     # 运行测试用例
-    def run_case(self, module):
+    def run_case(self, module, env):
+        print("begin run case, module = " + module)
         running_flag = True
 
         # 1 登录erp
-        loginSession = self.loginERP(module=module)
+        loginSession = self.loginERP(module=module, env=env)
         if loginSession is None:
             RunningLogString.logString = RunningLogString.logString + "登录失败"
             return running_flag
@@ -94,7 +96,12 @@ class TestcaseBase:
     # erp登录
     # 登录来获取session 和
     # RestRequest
-    def loginERP(self, module):
+    def loginERP(self, module, env):
+        '''
+        :param module: ERP模块
+        :param env: ERP运行环境：8030，8020，8010 .。。
+        :return:
+        '''
         # self.loginSession = loginERP.login(self.loginDomain,self.user,self.user + self.passwordpostfix)
         # self.restRequest = RestRequest(self.loginSession)
         RunningLogString.logString = RunningLogString.logString + "开始登录ERP<br/>"
@@ -111,20 +118,33 @@ class TestcaseBase:
         RoleUserMapper.RoleUserMapper.getRoleUserDict(module)
         user = RoleUserMapper.RoleUserMapper.roleUserJson.get(self.role)
 
-        RunningLogString.logString = RunningLogString.logString + "登录角色:" + self.role.encode('utf-8')+ '<br/>'
-        RunningLogString.logString = RunningLogString.logString + "登录用户名:" + user.encode('utf-8') + '<br/>'
-        RunningLogString.logString = RunningLogString.logString + "登录密码:" + (user + Env.Env.passwordpostfix).encode('utf-8') + '<br/>'
+        #RunningLogString.logString = RunningLogString.logString + "登录角色:" + self.role.encode('utf-8')+ '<br/>'
+        #RunningLogString.logString = RunningLogString.logString + "登录用户名:" + user.encode('utf-8') + '<br/>'
+        #RunningLogString.logString = RunningLogString.logString + "登录密码:" + (user + Env.Env.passwordpostfix).encode('utf-8') + '<br/>'
         loginSession = None
         try:
-            loginSession = loginERPModule.loginWithEnvDomain(user, user + Env.Env.passwordpostfix)
+            # 把user包装为对象后，包含username,password。TODO: 其他环境8010\8020的转码处理 ？
+            # username = user.username
+            # password = user.password
+
+            if(module == "Pgm") :
+                # 从配置文件读取的内容为unicode编码
+                username = user[u"username"]
+                real_pwd = (user[u"password"])[unicode(env)]
+            else :
+                username = user
+                real_pwd = user + Env.Env.passwordpostfix
+            loginSession = loginERPModule.loginWithEnvDomain(username, real_pwd)
             if loginSession == None:
                 RunningLogString.logString = RunningLogString.logString + "登录失败"+ '<br/>'
             else:
                 RunningLogString.logString = RunningLogString.logString + "登录成功"+ '<br/>'
-        except:
+        except Exception as ex:
             import logging
             logging.exception("登录失败：")
 
+        # clear path
+        sys.path.remove(pathCase)
         return loginSession
 
     def verifyResult(self):

@@ -55,6 +55,13 @@
                 <td align= "right">模块：</td>
                 <td>
                     <select name="module" id = "module" onchange="bao(this.options[this.options.selectedIndex].value)" style="width:520px;height:30px;">
+                        <option value="Mtool">Mtool</option>
+                        <option value="fap">fap</option>
+                        <option value="PermAuto">PermAuto</option>
+                        <option value="Pgm">Pgm</option>
+                        <option value="Assess">Assess</option>
+                        <option value="Budget">Budget</option>
+                        <!--
                     {% if module_lists %}
                         {% for module in module_list %}
                             {% if module.name == module_default%}
@@ -66,6 +73,7 @@
                     {% else %}
                         <option value="test" selected="selected">test</option>
                     {% endif %}
+                        -->
                 </select>
                 </td>
             </tr>

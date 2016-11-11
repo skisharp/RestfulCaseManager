@@ -32,7 +32,7 @@ $.ajax({
        url:url,
        success:function(data){
         var obj = eval('(' + data + ')');
-
+        eval
        url_show_result = url_show_result + '?batch_id=' + obj.batch_id ;
 
        window.location.href = url_show_result;
@@ -77,6 +77,38 @@ url ='http://'+window.location.host + '/paramters_list?module=' + module.innerHT
 window.location.href = url;
 }
 
+//跳转到某一页
+function onWhichPage() {
+    //alert(document.getElementById('curPage').value);
+    var currentPageInput = document.getElementById('curPage').value;
+    var module = document.getElementById('module');
+
+    url ='http://'+window.location.host + '/manage?curPage=' +currentPageInput+'&module='+module.innerHTML;
+    //alert(url);
+    window.location.href = url;
+
+}
+
+function search() {
+    var searchText = document.getElementById('search').value;
+    url ='http://'+window.location.host + '/manage?&module='+module.innerHTML+'&searchText='+searchText;
+    //alert(url);
+    window.location.href = url;
+    //alert(searchText);
+
+}
+
+function rowNumInput() {
+
+    var rowNum = document.getElementById('rowNum').value;
+    url ='http://'+window.location.host + '/manage?&module='+module.innerHTML+'&rowNum='+rowNum;
+    //alert(url);
+    window.location.href = url;
+    //alert(searchText);
+
+}
+    
+    
 </script>
   </head>
 {% load poll_extras %}
@@ -97,6 +129,7 @@ window.location.href = url;
                 <!--<li style="float:left;margin-left:10px;"><a href="/export/" style="color:#FFFFFF">导出</a></li> -->
                 <li style="float:left;margin-left:10px;homepage-style:none;"><a href="#" onclick="manageCaseListOrderByName();return false;" style="color:#FFFFFF">按照名称排序</a></li>
                 <li style="float:left;margin-left:10px;homepage-style:none;color:#FFF;">当前环境：{% include 'env.html' %}</li>
+                <li style="float:left;margin-left:10px;homepage-style:none;color:#FFF;"><input type="text" id="search" value="搜索case名称" onfocus="if(value=='搜索case名称') {value=''}" onblur="if (value=='') {value='搜索case名称'}" onkeydown='if(event.keyCode==13){search();}'/></li>
                 <!--
                 <form enctype="multipart/form-data" method="post" action="/upload/" name = "upload_case_file" style="float:left;margin-left:10px;">
                     <input type="file" name="caseFile" style="width:100px;"/><input type="submit" value="导入case">
@@ -137,7 +170,7 @@ window.location.href = url;
                     <td>{{ case.role }}</td>
                     <td>{{ case.addTime }}</td>
                     <td>{{ case.comment }}</td>
-                    <td>！！！！！！！！！！！！！！！！！！
+                    <td>
                         <a href="/delete?caseId={{ case | case_id}}&module={{module}}"> 删除 </a>
                         <a href="/modify?caseId={{ case | case_id}}"> 修改 </a>
                         <a href="/copy?caseId={{ case | case_id}}"> 复制</a>
@@ -153,17 +186,22 @@ window.location.href = url;
     </table>
 </div>
 <div class="page">
+
+    <input type="text" id="rowNum" name="rowNum" value="{{ rowNum }}" size="1" onkeydown='if(event.keyCode==13){rowNumInput();}'/>
+
     {% ifnotequal curPage 1 %}
         <a href="manage?curPage={{ curPage }}&pageType=pageUp&module={{module}}">
-            请上一页
+            上一页
         </a>
     {% endifnotequal %}
-        第{{ curPage }}/{{ allPage }}页
+
+    第<input type="text" id="curPage" name="curPage" value="{{ curPage }}" size="1" onkeydown='if(event.keyCode==13){onWhichPage();}'/>/{{ allPage }}页
     {% ifnotequal curPage allPage %}
         <a href="manage?curPage={{ curPage }}&pageType=pageDown&module={{module}}">
             下一页
         </a>
     {% endifnotequal %}
+
 </div>
 {% include 'footer.html'%}
 </body>

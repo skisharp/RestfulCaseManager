@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.conf.urls import *
+from django.conf.urls import patterns
 from RestfulCaseManager import RequestHandler
 from RestfulCaseManager import settings
 from RestfulCaseManager.request_handles import *
