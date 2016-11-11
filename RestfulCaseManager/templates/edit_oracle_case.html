@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8" />
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>新增OracleCase</title>
+</head>
+<body>
+<div  class="header">
+    <div class="header_left">
+        <h2>
+            <span style="color:FFF;font-weight:bold; margin-left:400px;"> 编辑OracleCase</span>
+        </h2>
+    </div>
+      {% include 'link_homepage.html'%}
+</div>
+<div class="middle">
+    <form action="/save_oracle_case/" method="post" style="padding-top:30px;">
+        <table border="0" style="border-collapse:collapse; margin-left:200px;">
+            <tr ><td align= "right">case_id：</td><td><input type="text" name="case_id" style="width:520px;height:30px;" value="{{case.id}}"></td></tr>
+            <tr ><td align= "right">process_id：</td><td><input type="text" name="process_id" style="width:520px;height:30px;" value="{{case.process_id}}"></td></tr>
+            <tr><td align= "right">name：</td><td><input type="text" name="name" style="width:520px;height:30px;" value="{{case.name}}"></td></tr>
+            <tr><td align= "right">ConnectionString：</td><td><input type="text" name="connection_string" style="width:520px;height:30px;" value="{{case.url}}"></td></tr>
+            <tr><td align= "right">type：</td><td>
+                <select name="type">
+                    {% for type in type_list %}
+                        {%if case.request_type == type%}
+                            <option value="{{type}}" selected="selected">{{type}}</option>
+                        {%else%}
+                            <option value="{{type}}">{{type}}</option>
+                        {%endif%}
+                    {% endfor %}
+                </select>
+            </td></tr>
+            <tr><td align= "right">call_value：</td><td><input type="text" name="call_value" style="width:520px;height:30px;" value="{{case.verify_expression}}"></td></tr>
+            <tr><td align= "right">expect_result：</td><td><input type="text" name="expected_result" style="width:520px;height:30px;" value="{{case.expected_result}}"></td></tr>
+            <tr><td align= "right"></td><td align= "right"><input type="submit" value="保存" style="width:120px;height:30px;"></td></tr>
+        </table>
+    </form>
+</div>
+{% include 'footer.html'%}
+</body>
+</html>
+

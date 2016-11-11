@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8" />
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>新增模块</title>
+</head>
+<body>
+<div  class="header">
+    <div class="header_left">
+        <h2>
+            <span style="color:FFF;font-weight:bold; margin-left:400px;"> 添加模块</span>
+        </h2>
+    </div>
+      {% include 'link_homepage.html'%}
+</div>
+<div class="middle">
+    <form action="/add_module_todb/" method="post" style="padding-top:30px;">
+        <table border="0" style="border-collapse:collapse; margin-left:200px;">
+            <tr><td align= "right">名字：</td><td><input type="text" name="name" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">所有者：</td><td><input type="text" name="owner" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right"></td><td align= "right"><input type="submit" value="新增" style="width:120px;height:30px;"></td></tr>
+        </table>
+    </form>
+</div>
+{% include 'footer.html'%}
+
+</body>
+</html>

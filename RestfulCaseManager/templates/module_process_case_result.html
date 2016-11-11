@@ -1,0 +1,43 @@
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+{% csrf_token %}
+<div style="color:#FFFFFF;background: #2C3E50;height:100px;font-family: 微软雅黑;">
+    <div style="float:left;margin-left:10px;padding-top:20px;">
+        <ul style="padding-top:0px;padding-right:0px;color:#ffffff;list-style:none;">
+            <li style="float:left;margin-left:10px;">流程共<span  style="margin-left:10px;font-weight:bold;margin-right: 10px;color:blue;font-size:30px;">{{process_count}} </span>个
+            </li>
+            <li style="float:left;margin-left:20px;">失败<span style="color:red;font-size:30px;font-weight:bold;margin-right: 10px;"> {{fail_count}}</span>个</li>
+        </ul>
+    </div>
+    {% include 'link_homepage.html'%}
+</div>
+{% for process in data %}
+    <div style="margin-top:10px;">
+        <span style="font-size:20px;font-weight:bold;">{{process.name}}</span>
+    </div>
+    <table border="1" style="border-collapse:collapse;width:1330px;table-layout:fixed;Word-break: break-all;" id="case_list" class="table-6">
+        <thead>
+        <tr><th>用例名称</th><th>结果</th><th>实际结果</th><th>期望结果</th><th>response_code</th><th>response_content</th><th>运行日志</th></tr>
+        {% for case in process.caselist%}
+        {%if case.result = 'Fail'%}
+            <tr style="background:red">
+        {%else%}
+            <tr style="background:#FFF">
+        {% endif %}
+                <td>{{ case.case_name }}</td>
+                <td >{{ case.result }}</td>
+                <td>{{ case.actual_result }}</td>
+                <td>{{ case.expected_result }}</td>
+                <td>{{ case.response_status }}</td>
+                <td>{{ case.response_content }}</td>
+                <td><a href="/caselog?case_id={{case.case_id}}&batch_id={{case.batch_id}}">日志</a></td>
+            </tr>
+        {% endfor %}
+        </thead>
+    </table>
+{% endfor %}
+{% include 'footer.html'%}
+
+
+

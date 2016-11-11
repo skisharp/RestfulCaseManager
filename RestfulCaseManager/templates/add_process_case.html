@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8" />
+    <title>新增流程测试用例</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div style="color:#FFFFFF;background: #2C3E50;height:100px;font-family: 微软雅黑;">
+        <div style="padding-left: 300px;padding-top: 10px;float: left;">
+            {% if case %}
+                <h2>编辑测试用例 {{case.name}}</h2>
+            {% else %}
+                <h2>为流程 {{process_item.name}} 添加测试用例</h2>
+            {% endif %}
+        </div>
+        {% include 'link_homepage.html'%}</div>
+    </div>
+    <div class="middle">
+    <form action="/save_process_case/" method="post">
+        <table border="0" style="border-collapse:collapse; margin-left:200px;">
+             {% if case %}
+             <tr style="display:none;">
+                <td align= "right">id：</td>
+                <td><input type="text" name="process_id" style="width:520px;height:30px;" value="{{case.process_id}}"></td>
+            </tr>
+            <tr style="display:none;">
+                <td align= "right">id：</td>
+                <td><input type="text" name="case_id" style="width:520px;height:30px;" value="{{case.id}}"></td>
+            </tr>
+            <tr>
+                <td align= "right">名字：</td>
+                <td><input type="text" name="name" style="width:520px;height:30px;" value="{{case.name}}"></td>
+            </tr>
+            <tr><td align= "right">url：</td><td><input type="text" name="url" style="width:520px;height:30px;" value="{{case.url}}"></td></tr>
+            <tr><td align= "right">数据：</td><td><input type="text" name="data" style="width:520px;height:30px;" value="{{case.data}}"></td></tr>
+            <tr><td align= "right">请求类型：</td><td>
+                <select name="request_type" style="width:520px;height:30px;">
+                    {% for type in request_type_list %}
+                        {% if case.request_type == type%}
+                            <option value="{{case.request_type}}" selected="selected">{{case.request_type}}</option>
+                        {% else %}
+                            <option value="{{type}}">{{type}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </td></tr>
+            <tr><td align= "right">期望结果：</td><td><input type="text" name="expected_result" style="width:520px;height:30px;" value="{{case.expected_result}}"></td></tr>
+            <tr><td align= "right">验证模式：</td>
+            <td>
+                    <select name="verify_mode" style="width:520px;height:30px;">
+                            <option value="jsonpath" selected="selected">jsonpath</option>
+                            <option value="parameter">parameter</option>
+                            <option value="code">code</option>
+                            <option value="fullmatch" >Full Match</option>
+                            <option value="sql" >sql</option>
+                    </select>
+             </td></tr>
+            <tr><td align= "right">验证模式值：</td><td><input type="text" name="verify_expression" style="width:520px;height:30px;" value="{{case.verify_expression}}"></td></tr>
+            <tr>
+                <td align= "right">登录用户：</td>
+                <td><input type="text" name="role"  id="role" style="width:520px;height:30px;" value="{{case.role}}"></td>
+            </tr>
+            <tr><td align= "right">提取器：</td><td><input type="text" name="extractor" style="width:520px;height:30px;" value="{{case.extractor}}"></td></tr>
+            <tr><td align= "right"></td><td align= "right"><input type="submit" value="保存" style="width:120px;height:30px;"></td></tr>
+
+            {% else %}
+
+            <tr style="">
+                <td align= "right">id：</td>
+                <td><input type="text" name="process_id" style="width:520px;height:30px;" value="{{process_item.id}}"></td>
+            </tr>
+            <tr>
+                <td align= "right">名字：</td>
+                <td><input type="text" name="name" style="width:520px;height:30px;"></td>
+            </tr>
+            <tr><td align= "right">url：</td><td><input type="text" name="url" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">数据：</td><td><input type="text" name="data" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">请求类型：</td><td>
+                <select name="request_type" style="width:520px;height:30px;">
+                    <option value="get">GET</option>
+                    <option value="put">PUT</option>
+                    <option value="post" selected="selected">POST</option>
+                </select>
+            </td></tr>
+            <tr><td align= "right">期望结果：</td><td><input type="text" name="expected_result" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">验证模式：</td>
+            <td>
+                    <select name="verify_mode" style="width:520px;height:30px;">
+                            <option value="jsonpath" selected="selected">jsonpath</option>
+                            <option value="parameter">parameter</option>
+                            <option value="code">code</option>
+                            <option value="fullmatch" >Full Match</option>
+                            <option value="sql" >sql</option>
+                    </select>
+             </td></tr>
+            <tr><td align= "right">验证模式值：</td><td><input type="text" name="verify_expression" style="width:520px;height:30px;"></td></tr>
+            <tr>
+                <td align= "right">登录用户：</td>
+                <td><input type="text" name="role"  id="role" style="width:520px;height:30px;"></td>
+            </tr>
+            <tr><td align= "right">提取器：</td><td><input type="text" name="extractor" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right"></td><td align= "right"><input type="submit" value="新增" style="width:120px;height:30px;"></td></tr>
+            {% endif %}
+        </table>
+    </form>
+        </div>
+    {% include 'footer.html'%}
+</body>
+</html>
+

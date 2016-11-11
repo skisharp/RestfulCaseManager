@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8" />
+    <title>更新测试用例</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div style="color:#FFFFFF;background: #2C3E50;height:100px;font-family: 微软雅黑;margin-bottom: 20px;">
+        <div><h2><a href="/index/" style="margin-left:1000px;">Home Page</a></a></h2></div>
+    </div>
+    <form action="/updatecase/" method="post">
+        <table border="0" style="border-collapse:collapse; margin-left:200px;">
+              {% load poll_extras %}
+            <tr><td align= "right">id：</td><td><input value="{{ case | case_id}}" type="text" name="caseId"  style="width:520px;height:30px;" ></td></tr>
+            <tr><td align= "right">名字：</td><td><input value="{{case.name}}" type="text" name="name"  style="width:520px;height:30px;" 　readOnly="true"></td></tr>
+            <tr><td align= "right">url：</td><td><input type="text" name="url" value="{{case.url}}" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">数据：</td><td><input type="text" name="data" value="{{case.data}}" style="width:520px;height:30px;"></td></tr>
+            <tr>
+                <td align= "right">请求类型：</td><td>
+                    <select name="requestType" style="width:520px;height:30px;">
+                        {% if case.requestType == 'post' or case.requestType == 'Post'%}
+                            <option value="Get">GET</option>
+                            <option value="Put">PUT</option>
+                            <option value="Post" selected="selected">POST</option>
+                        {% endif %}
+                        {% if case.requestType == 'get' or case.requestType == 'Get' %}
+                            <option value="Get" selected="selected">GET</option>
+                            <option value="Post">POST</option>
+                            <option value="Put">PUT</option>
+                        {% endif %}
+                        {% if case.requestType == 'put' or case.requestType == 'Put' %}
+                            <option value="Put" selected="selected">PUT</option>
+                            <option value="Post">POST</option>
+                            <option value="Get">GET</option>
+                        {% endif %}
+                    </select>
+                </td>
+            </tr>
+            <tr><td align= "right">期望结果：</td><td> <input type="text" name="expectedResult" value="{{case.expectedResult}}"  style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">验证模式：</td>
+            <td>
+                <select name="verifyMode" style="width:520px;height:30px;">
+                        {% for mode in verifyModeList %}
+                            {% if mode == case.verifyMode %}
+                                <option value="{{mode}}" selected="selected">{{mode}}</option>
+                            {% else %}
+                                <option value="{{mode}}">{{mode}}</option>
+                            {% endif %}
+                        {% endfor %}
+                </select>
+            </td></tr>
+
+            <tr><td align= "right">验证模式表达式：</td><td><input type="text" name="path" value="{{case.jsonPath}}" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">登录角色：</td>
+            <td>
+                <select name="role" style="width:520px;height:30px;">
+                        {% for role in roles %}
+                            {% if role == case.role %}
+                                <option value="{{role}}" selected="selected">{{role}}</option>
+                            {% else %}
+                                <option value="{{role}}">{{role}}</option>
+                            {% endif %}
+                        {% endfor %}
+                </select>
+            </td></tr>
+
+            <tr><td align= "right">模块：</td><td><input type="text" name="module" value="{{case.module}}" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">Priority：</td>
+                <td>
+                <select name="priority" style="width:520px;height:30px;">
+                    <option value="P0">P0</option>
+                    <option value="P1" selected="selected">P1</option>
+                    <option value="P2">P2</option>
+                    <option value="P3">P3</option>
+            </select>
+                </td></tr>
+            <tr><td align= "right">备注：</td><td><input type="text" name="comment" value="{{case.comment}}" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right"></td><td align= "right"><input type="submit" value="更新" style="width:120px;height:30px;"></td></tr>
+        </table>
+    </form>
+{% include 'footer.html'%}
+</body>
+</html>
+

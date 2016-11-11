@@ -1,0 +1,38 @@
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<div class="header">
+    <div class="header_left">
+        <ul style="padding-top:0px;padding-right:0px; list-style:none;">
+            <li style="float:left;margin-left:10px;homepage-style:none; color:#FFF;">
+                <span style="color:FFF;font-weight:bold; margin-right:20px;"> 测试用例:  <span style="color:FE001B">{{case.name}} </span></span>
+            </li>
+            <li style="float:left;margin-left:10px;homepage-style:none;color:#FFF;">
+                <span style="color:FFF;margin-left:50px;font-weight:bold; margin-right:20px;"> 期望结果:  <span style="color:FE001B">{{case.expectedResult}} </span></span>
+            </li>
+        </ul>
+    </div>
+      {% include 'link_homepage.html'%}
+</div>
+<div class="middle">
+    <table border="1" style="width:1330px;table-layout:fixed;Word-break: break-all;border-collapse:collapse;" class="table-6">
+        <tr><th>结果</th><th>实际结果</th><th>响应码</th><th>响应数据</th><th>运行时期</th><th>运行时间</th><th>运行日志</th></tr>
+         {% load poll_extras %}
+        {% for result in resultList %}
+            {% if result.result == "Pass" %}
+                <tr bgcolor= "f4feff">
+            {% else %}
+                <tr bgcolor= "FE001B">
+            {% endif %}
+            <td>{{ result.result }}</td>
+            <td>{{ result.actualResult }}</td>
+            <td>{{ result.responseCode }}</td>
+            <td>{{ result.response }}</td>
+            <td>{{ result.runningDate }}</td>
+            <td>{{ result.runningTime }}</td>
+            <td><a href="/caselog?resultId={{ result | case_id}}">日志</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% include 'footer.html'%}

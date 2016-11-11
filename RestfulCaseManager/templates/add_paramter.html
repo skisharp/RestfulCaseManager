@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8" />
+    <title>新增参数</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="header">
+    <div class="header_left">
+        <ul>
+        添加参数
+        </ul>
+    </div>
+    {% include 'link_homepage.html'%}</div>
+    <div class="middle">
+    <form action="/add_paramter_todb/" method="post" style="padding-top:20px;">
+        <table border="0" style="border-collapse:collapse; margin-left:200px;">
+            <tr><td align= "right">名字：</td><td><input type="text" name="name" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">初始化方式：</td>
+            <td>
+            <select name="method" style="width:520px;height:30px;">
+                    <option value="jsonpath" selected="selected">直接赋值</option>
+                    <option value="BySQL">SQL</option>
+            </select>
+             </td></tr>
+            <tr><td align= "right">值：</td><td><input type="text" name="value" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right">模块：</td><td><input type="text" name="module" style="width:520px;height:30px;"></td></tr>
+            <tr><td align= "right"></td><td align= "right"><input type="submit" value="新增" style="width:120px;height:30px;"></td></tr>
+        </table>
+    </form>
+        </div>
+    {% include 'footer.html'%}
+</body>
+</html>

@@ -1,0 +1,109 @@
+<header>
+    <script type="text/javascript" src='/static/jquery-2.2.3.js'></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+<script>
+// 跳转到添加测试用例页面
+function addprocesscasehtml(){
+// var module = document.getElementById('module');
+url ='http://'+window.location.host + '/add_process_case_html?process_id={{process_item.id}}' ;
+window.location.href = url;
+}
+
+// 跳转到添加oracle module
+function add_oracle_module(){
+// var module = document.getElementById('module');
+url ='http://'+window.location.host + '/add_oracle_case_html?process_id={{process_item.id}}' ;
+window.location.href = url;
+}
+
+// 保存case运行顺序
+function save_order(event){
+    var json = {};
+    $("#case_list > tbody tr").each(function(index){
+        //  false时相当于break, 如果return true 就相当于continue
+        if(index == 0) return true;
+        var id=$(this).find("td:eq(1)").text();
+        var text = $("#" + id).val();
+        json[id]=text;
+    });
+    json_data = JSON.stringify(json);
+    url ='http://'+window.location.host + '/save_order';
+
+    $.post( url,
+            json_data,
+            function( data ) {
+                if(data.message == 'successful') alert('save successful!');
+                },
+            "json"
+    );
+}
+
+// 运行流程
+function run_process_case(){
+var env = document.getElementById('env');
+url ='http://'+window.location.host + '/run_process_case?process_id={{process_item.id}}&env=' + env.value ;
+
+url_show_result = 'http://'+window.location.host + '/show_result?process_id={{process_item.id}}';
+
+document.title="loading";
+$('#data-box').find('table').css('display','none').end().html('<p style="padding-top:50px;text-align:center;"><img src="/static/busy.gif" alt=""/></p>');
+
+$.ajax({
+   type:'GET',
+   dataType:'html',
+   url:url,
+   success:function(data){
+    var obj = eval('(' + data + ')');
+    var status_str = '';
+     if(obj.message == 'success')   {status_str = 'success';}
+     else {status_str = 'fail';}
+     url_show_result = url_show_result + '&status=' + status_str + '&batch_id=' + obj.batch_id ;
+     window.location.href = url_show_result;
+   }
+});
+}
+</script>
+</header>
+<div class="header">
+    <div class="header_left">
+        <ul style="list-style:none;">
+            <li style="float:left;margin-left:10px;"><a href="#" style="color:#FFFFFF">当前流程<span name="module" id = "module"  style="margin-left:10px;color:red;font-weight:bold;margin-right: 10px;">{{process_item.name}}</span></a></li>
+            <li style="float:left;margin-left:10px;"><a href="#" style="color:#FFFFFF">共<span style="margin-left:10px;color:red;font-weight:bold;margin-right: 10px;">{{process_case_list_count}}</span> 条 </a></li>
+            <li style="float:left;margin-left:10px;"><a href="#" onclick="addprocesscasehtml();return false;" style="color:#FFFFFF">添加case</a></li>
+             <li style="float:left;margin-left:10px;"><a href="#" onclick="add_oracle_module();return false;" style="color:#FFFFFF">调用数据库模块</a></li>
+            <li style="float:left;margin-left:10px;"><a href="#" onclick="save_order();return false;" style="color:#FFFFFF">保存顺序</a></li>
+            <li style="float:left;margin-left:10px;"><a href="#" onclick="run_process_case();return false;" style="color:#FFFFFF">运行该流程</a></li>
+            <li style="float:left;margin-left:10px;">当前环境：{% include 'env.html' %}
+            </li>
+        </ul>
+    </div>
+    {% include 'link_homepage.html'%}
+</div>
+<div class="middle" id="data-box">
+    <table border="1" style="border-collapse:collapse;width:1330px;table-layout:fixed;Word-break: break-all;" id="case_list">
+        <tr><th>名称</th><th>id</th><th>顺序</th><th>操作</th></th></tr>
+         {% csrf_token %}
+        {% load poll_extras %}
+        {% if process_case_list %}
+            {% for case in process_case_list %}
+                <tr>
+                    <td>{{ case.name }}</td>
+                    <td>{{ case.id }}</td>
+                    <td><input type="text" name="order"  id = {{ case.id }} value="{{case.order}}"></td>
+                    <td>
+                        <a href="/delete_process_case?case_id={{ case.id }}"> 删除 </a>
+                        {% if case.call_type == 'Oracle'%}
+                        <a href="/edit_oracle_case?case_id={{ case.id }}"> 编辑 </a>
+                        {%else%}
+                        <a href="/edit_process_case?case_id={{ case.id }}"> 编辑 </a>
+                        {%endif%}
+                        <a href="/copy_process_case?case_id={{ case.id }}"> 复制</a>
+                    </td>
+                </tr>
+                    {% endfor %}
+                {% else %}
+                    No data!
+                {% endif %}
+    </table>
+</div>
+{% include 'footer.html'%}

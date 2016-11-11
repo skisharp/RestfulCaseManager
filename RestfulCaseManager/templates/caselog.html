@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8" />
+    <title>运行日志</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<div class="header" >
+    <div class="header_left">
+        <h2>
+            <span style="color:FFF;font-weight:bold; margin-right:20px;"> 运行日志如下 </span>
+        </h2>
+    </div>
+     {% include 'link_homepage.html'%}
+</div>
+<div id = 'content' class="middle">{% autoescape off %} {{logging}}{% endautoescape %} </div>
+{% include 'footer.html'%}
+</html>
+

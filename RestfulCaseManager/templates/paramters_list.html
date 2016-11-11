@@ -1,0 +1,35 @@
+<head>
+	<meta charset="utf-8" />
+    <title>参数列表</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<div class="header">
+    <div class="header_left">
+        <ul >
+            <li style="float:left;margin-left:20px;"><a href="/add_paramter/" style="color:#FFFFFF">添加参数</a></li>
+        </ul>
+    </div>
+    {% include 'link_homepage.html'%}
+</div>
+<div class="middle">
+    <table border="1" style="border-collapse:collapse;width:1330px;table-layout:fixed;Word-break: break-all;">
+    <tr><th>名称</th><th>值</th><th>方式</th><th>模块</th></tr>
+    {% if caseList %}
+        {% for case in caseList %}
+            <tr>
+                <td>{{ case.name }}</td>
+                <td>{{ case.value }}</td>
+                <td>{{ case.method }}</td>
+                <td>{{ case.module }}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        No data!
+    {% endif %}
+       </table>
+</div>
+{% include 'footer.html'%}
+
+
+
+

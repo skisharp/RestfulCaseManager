@@ -1,0 +1,43 @@
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<div class="header">
+    <div class="header_left">
+        <ul style="padding-top:0px;padding-right:0px;color:#ffffff;list-style:none;">
+            <li style="float:left;margin-left:10px;"><a href="#" style="color:#FFFFFF">共运行测试用例<span  style="margin-left:10px;font-weight:bold;margin-right: 10px;;font-size:30px;">{{count}}</span></a>
+                成功<span style="color:blue;font-size:30px;font-weight:bold;"> {{success_count}}</span>
+                失败<span style="color:red;font-size:30px;font-weight:bold;">  {{fail_count}}</span>
+
+            </li>
+        </ul>
+    </div>
+    {% include 'link_homepage.html'%}
+</div>
+<div class="middle">
+    <table border="1" style="border-collapse:collapse;width:1330px;table-layout:fixed;Word-break: break-all;" id="case_list" class="table-6">
+        <thead>
+            <tr><th>名称</th><th>结果</th><th>响应码</th><th>实际结果</th><th>期望结果</th><th>运行时间</th><th>操作</th></tr>
+            {% if result_list %}
+             {% for case in result_list %}
+             {%if case.result = 'Fail'%}
+                <tr style="background:red">
+             {%else%}
+                <tr style="background:#FFF">
+            {% endif %}
+                <td> {{case.caseName}}</td>
+                <td> {{case.result}}</td>
+                <td> {{case.responseCode}}</td>
+                <td> {{case.actualResult}}</td>
+                <td>{{case.expectedResult}}</td>
+                <td> {{case.runningTime}}</td>
+                <td>
+                    <a href="/caselog?resultId={{case.resultObjectId}}">日志</a>
+                    <a href="/history_result?caseId={{ case.caseId}}">历史结果</a>
+                </td>
+                </tr>
+            {% endfor %}
+            {% endif%}
+        </thead>
+    </table>
+</div>
+{% include 'footer.html'%}

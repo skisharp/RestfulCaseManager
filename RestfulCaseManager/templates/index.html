@@ -1,0 +1,56 @@
+<head>
+    <script type="text/javascript" src='/static/jquery-2.2.3.js'></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+<script>
+// 提取参数
+function getQueryParams(qs) {
+    qs = qs.split('+').join(' ');
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+    return params;
+}
+
+// 设置相应的模块
+function setSelectedOption(sel,module) {
+    var opt;
+    for ( var i = 0, len = sel.options.length; i < len; i++ ) {
+        opt = sel.options[i];
+        if ( opt.value === module ) {
+            opt.selected = true
+            break;
+        }
+    }
+}
+
+
+// 加载完后执行
+window.onload = function() {
+var query = getQueryParams(document.location.search);
+var sel = document.getElementById('module');
+setSelectedOption(sel,query.module);
+};
+</script>
+</head>
+<div class="header">
+    <h2 style="padding-left:200px;padding-top:20px;float:left"> <a href="#" style="color:#FFFFFF;">Restful Test</a></h2>
+    <div style="float:right;padding-right:300px;">
+        <ul style="padding-top:30px;padding-right:0px;list-style:none;">
+            <li style="float:left;margin-left:10px;homepage-style:none;"><a href="/addmodule/" style="color:#FFFFFF;" >添加模块</a></li>
+            <li style="float:left;margin-left:10px;homepage-style:none;"><a href="/zrx/" style="color:#FFFFFF;" >zrx</a></li>
+        </ul>
+    </div>
+</div>
+<div id="data-box" class="middle">
+    <div  style="padding-top:30px;margin-left:100px;">
+        {% for item in module_list%}
+            <div style="float:left;background:#5A4182;color:#FFF;width:200px;height:120px;font-size:200%;padding-top:50px;margin-top:10px;margin-left:20px;">
+                <a href="/manage?module={{item.name}}" style="margin-left:50px;color:#FCFCFC">{{item.name}}</a>
+            </div>
+        {% endfor%}
+    </div>
+</div>
+{% include 'footer.html'%}

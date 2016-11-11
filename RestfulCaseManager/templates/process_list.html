@@ -1,0 +1,84 @@
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script type="text/javascript" src='/static/jquery-2.2.3.js'></script>
+<script>
+// 按照名称进行排序
+function manageCaseListOrderByName(){
+var sel = document.getElementById('module');
+url ='http://'+window.location.host + '/manage?module=' + sel.innerHTML + '&order=name';
+window.location.href = url;
+}
+
+// 跳转到添加流程页面
+function addCaseHtml(){
+var sel = document.getElementById('module');
+url ='http://'+window.location.host + '/addprocesshtml?module=' + sel.innerHTML + '&type=add' ;
+window.location.href = url;
+}
+
+
+// 运行流程
+function run_process_case(){
+var env = document.getElementById('env');
+url ='http://'+window.location.host + '/run_module_process?env=' + env.value ;
+var module = document.getElementById('module');
+url = url + '&module=' + module.innerHTML;
+url_show_result = 'http://'+window.location.host + '/show_module_process_result?module=' + module.innerHTML;
+
+document.title="loading";
+$('#data-box').find('table').css('display','none').end().html('<p style="padding-top:50px;text-align:center;"><img src="/static/busy.gif" alt=""/></p>');
+
+$.ajax({
+   type:'GET',
+   dataType:'html',
+   url:url,
+   success:function(data){
+    console.log(data);
+    var obj = eval('(' + data + ')');
+     url_show_result = obj.result_url;
+     window.location.href = url_show_result;
+   }
+});
+}
+</script>
+    </head>
+<div class="header">
+    <div style="float:left;margin-left:10px;padding-top:20px;">
+            <ul style="padding-top:0px;padding-right:0px;color:#ffffff;list-style:none;">
+                <li style="float:left;margin-left:10px;"><a href="#" style="color:#FFFFFF">当前模块<span name="module" id = "module"  style="margin-left:10px;color:red;font-weight:bold;margin-right: 10px;">{{module}}</span></a></li>
+                <li style="float:left;margin-left:10px;"><a href="/executeCase/" style="color:#FFFFFF">共<span style="margin-left:10px;color:red;font-weight:bold;margin-right: 10px;">{{process_count}}</span> 条流程 </a></li>
+                <li style="float:left;margin-left:10px;"><a href="#" onclick="addCaseHtml();return false;" style="color:#FFFFFF">添加流程</a></li>
+                 <li style="float:left;margin-left:10px;"><a href="#" onclick="run_process_case();return false;" style="color:#FFFFFF">运行全部流程</a></li>
+                <li style="float:left;margin-left:10px;">当前环境：
+                    <select name="env" id = "env" >
+                        <option value="8030" selected="selected">8030</option>
+                        <option value="qa">qa</option>
+                        <option value="8020">8020</option>
+                    </select>
+                </li>
+            </ul>
+    </div>
+     {% include 'link_homepage.html'%}
+</div>
+<div id="data-box" style="" class="middle">
+<table border="1" style="border-collapse:collapse;width:1330px;table-layout:fixed;Word-break: break-all;">
+    <tr><th>名称</th><th>操作</th></th></tr>
+    {% load poll_extras %}
+    {% if process_list %}
+        {% for process in process_list %}
+            <tr>
+                <td>{{ process.name }}</td>
+                <td>
+                    <a href="/process_case_list?process_id={{ process.id}}"> 查看 </a>
+                    <a href="/addprocesshtml?process_id={{ process.id}}&type=edit"> 修改 </a>
+                    <a href="/delete_process?process_id={{ process.id}}"> 删除 </a>
+                    <a href="/copy_process?process_id={{ process.id}}"> 复制 </a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        No data!
+    {% endif %}
+</table>
+</div>
+{% include 'footer.html'%}

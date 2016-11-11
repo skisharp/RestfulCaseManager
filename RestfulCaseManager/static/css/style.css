@@ -1,0 +1,54 @@
+﻿.header{color:#FFFFFF;background: #2C3E50;height:100px;font-family: 微软雅黑;}
+.footer {
+	background: #2C3E50;
+	height:100px;
+	font-family: 微软雅黑;
+	margin-top:5px;
+	clear:both;
+}
+.middle{
+	background:#EEEEEE;
+	margin-top:5px;
+	margin-bottom:5px;
+	_height:480px; min-height:480px;
+	font-family: 微软雅黑;
+}
+.page {margin-top:10px;float:right;padding-right:20px;}
+.table-6 thead th {
+background-color: rgb(128, 102, 160);
+color: #fff;
+border-bottom-width: 0;
+}
+
+.table-6 {
+border-collapse:collapse;
+table-layout:fixed;
+word-wrap:break-word;
+width:100%;}
+
+/* Column Style */
+.table-6 td {
+color: #000;
+}
+/* Heading and Column Style */
+.table-6 tr, .table-6 th {
+border-width: 1px;
+border-color: rgb(128, 102, 160);
+}
+
+/* Padding and font style */
+.table-6 td, .table-6 th {
+padding: 5px 10px;
+font-size: 12px;
+font-family: Verdana;
+
+}
+.header_left{
+float:left;
+margin-left:10px;
+padding-top:20px;
+}
+.header_left ul{
+list-style:none;
+}
+

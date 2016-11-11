@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+
+    <head>
+
+        <script type="text/javascript" src='/static/jquery-2.2.3.js'></script>
+        <title>Ajax Test</title>
+        <script type="text/javascript">
+        var int=self.setInterval("wwwww()",500000)
+        function wwwww(){
+            $.ajax({
+                type: 'GET',
+                url: "http://localhost:8001/returnjson",
+                success:function() {
+                    alert('dddddd');
+                }
+            });
+
+
+        }
+        function eee() {
+             alert('000000000000000');
+             $.ajax({
+                    type: 'GET',
+                    url: "http://localhost:8001/returnjson",
+                    success:function(ddd) {
+                        alert(ddd);
+                    }
+              });
+        }
+function fffffffff(){
+setInterval(aaaaaaaa, 1000);
+}
+         function aaaaaaaa() {
+             $.ajax({
+                    type: 'POST',
+                    data:{
+                            id:'123',
+                            name: 'hhhhh'
+                            },
+                    url: "http://localhost:8001/returnjson",
+                    success:function(ddd,status) {
+                        alert(status);
+                        $.each(ddd,function(key,value){alert(key);});
+                    },
+                 dataType:"json"
+              });
+        }
+
+
+        </script>
+    </head>
+    <body>
+        <h1>
+            Ajax 演示
+        </h1>
+        <input type="button" id = 'ttt' value="Send!" onclick="wwwww();"/>
+        <input type="button" id = 'eee' value="Ajax 加载字典!" onclick="fffffffff();"/>
+        <div id="llll">88888</div>
+        <div id="homepage">Ajax 加载列表</div>
+
+        <p>result: <span id='result'></span></p>
+
+
+    {% load bootstrap3 %}
+        <form action="/detail.html/myForm" method="post" class="form">
+        {%csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "star" %} Submit
+                </button>
+
+
+             <fieldset>
+                <legend>你要参加２０１４年７月ＪＬＰＴ的哪个等级考试？</legend>
+                         {% bootstrap_form form %}
+                        <input type="submit" value="submit" />
+                </fieldset>
+        {% endbuttons %}
+</form>
+
+
+    </body>
+</html>

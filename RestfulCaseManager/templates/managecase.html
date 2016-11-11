@@ -1,0 +1,169 @@
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script type="text/javascript" src='/static/jquery-2.2.3.js'></script>
+<script>
+// 按照名称进行排序
+function manageCaseListOrderByName(){
+var sel = document.getElementById('module');
+url ='http://'+window.location.host + '/manage?module=' + sel.innerHTML + '&order=name';
+window.location.href = url;
+}
+
+// 跳转到添加测试用例页面
+function addcasehtml(){
+var sel = document.getElementById('module');
+url ='http://'+window.location.host + '/addcasehtml?module=' + sel.innerHTML ;
+window.location.href = url;
+}
+
+
+// 执行case
+function runCase(event){
+event.preventDefault();
+var sel = document.getElementById('module');
+document.title="loading";
+$('#data-box').find('table').css('display','none').end().html('<p style="padding-top:50px;text-align:center;"><img src="/static/busy.gif" alt=""/></p>');
+var env = document.getElementById('env');
+url ='http://'+window.location.host + '/executeCase?module=' + sel.innerHTML + '&env=' + env.value;
+url_show_result = 'http://'+window.location.host + '/show_case_result'
+$.ajax({
+       type:'GET',
+       dataType:'html',
+       url:url,
+       success:function(data){
+        var obj = eval('(' + data + ')');
+
+       url_show_result = url_show_result + '?batch_id=' + obj.batch_id ;
+
+       window.location.href = url_show_result;
+       }
+    });
+}
+
+// 执行 单个case
+function runSingleCase(caseId){
+var sel = document.getElementById('module');
+document.title="loading";
+
+$('#data-box').find('table').css('display','none').end().html('<p style="padding-top:50px;text-align:center;"><img src="/static/busy.gif" alt=""/></p>');
+
+var env = document.getElementById('env');
+
+url ='http://'+window.location.host + '/executeCase?module=' + sel.innerHTML + '&env=' + env.value + '&caseId='+ caseId;
+url_show_result = 'http://'+window.location.host + '/show_case_result';
+
+$.ajax({
+       type:'GET',
+       dataType:'html',
+       url:url,
+       success:function(data){
+        var obj = eval('(' + data + ')');
+       url_show_result = url_show_result + '?batch_id=' + obj.batch_id ;
+       window.location.href = url_show_result;
+       }
+    });
+}
+// 跳转到流程管理页面
+function navigateProcessManageHtml(){
+var module = document.getElementById('module');
+url ='http://'+window.location.host + '/processflowhtml?module=' + module.innerHTML;
+window.location.href = url;
+}
+
+// 跳转到参数列表页面
+function getParams(){
+var module = document.getElementById('module');
+url ='http://'+window.location.host + '/paramters_list?module=' + module.innerHTML;
+window.location.href = url;
+}
+
+</script>
+  </head>
+{% load poll_extras %}
+<body>
+
+<div class="header">
+    <div class="header_left">
+            <ul style="padding-top:0px;padding-right:0px; list-style:none;">
+                <li style="float:left;margin-left:10px;homepage-style:none; color:#FFF;">
+                    当前模块
+                    <span name="module" id = "module"  style="margin-left:10px;color:red;font-weight:bold;margin-right: 10px;">{{module}}</span>
+                </li>
+                <li style="float:left;margin-left:10px;homepage-style:none;color:#FFF;">共<span style="margin-left:10px;color:red;font-weight:bold;margin-right: 10px;">{{caseCount}}</span> 条测试用例 </li>
+                <li style="float:left;margin-left:10px;homepage-style:none"><a href="#" onclick="navigateProcessManageHtml();return false;" style="color:#FFFFFF" >流程管理</a></li>
+                <li style="float:left;margin-left:10px;homepage-style:none"><a href="#" onclick="getParams();return false;" style="color:#FFFFFF">参数列表</a></li>
+                <li style="float:left;margin-left:10px;homepage-style:none;"><a href="#" onclick="addcasehtml();return false;" style="color:#FFFFFF">添加case</a></li>
+                <li style="float:left;margin-left:10px;homepage-style:none;"><a href="#" onclick="runCase(event);return false;" style="color:#FFFFFF">运行</a></li>
+                <!--<li style="float:left;margin-left:10px;"><a href="/export/" style="color:#FFFFFF">导出</a></li> -->
+                <li style="float:left;margin-left:10px;homepage-style:none;"><a href="#" onclick="manageCaseListOrderByName();return false;" style="color:#FFFFFF">按照名称排序</a></li>
+                <li style="float:left;margin-left:10px;homepage-style:none;color:#FFF;">当前环境：{% include 'env.html' %}</li>
+                <!--
+                <form enctype="multipart/form-data" method="post" action="/upload/" name = "upload_case_file" style="float:left;margin-left:10px;">
+                    <input type="file" name="caseFile" style="width:100px;"/><input type="submit" value="导入case">
+                </form>
+                -->
+            </ul>
+    </div>
+    {% include 'link_homepage.html'%}
+</div>
+<div id="data-box" class="middle">
+    <table border="1" class="table-6" >
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>url</th>
+                <th>数据</th>
+                <th>请求类型</th>
+                <th>期望结果</th>
+                <th>验证模式</th>
+                <th>JSONPath</th>
+                <th>Priority</th>
+                <th>角色</th>
+                <th>添加时间</th>
+                <th>说明</th>
+                <th>操作</th>
+            </tr>
+            {% if caseList %}
+                {% for case in caseList %}
+                    <tr>
+                    <td>{{ case.name }}</td>
+                    <td>{{ case.url }}</td>
+                    <td>{{ case.data }}</td>
+                    <td>{{ case.requestType }}</td>
+                    <td>{{ case.expectedResult }}</td>
+                    <td>{{ case.verifyMode }}</td>
+                    <td>{{ case.jsonPath }}</td>
+                    <td>{{ case.priority }}</td>
+                    <td>{{ case.role }}</td>
+                    <td>{{ case.addTime }}</td>
+                    <td>{{ case.comment }}</td>
+                    <td>
+                        <a href="/delete?caseId={{ case | case_id}}&module={{module}}"> 删除 </a>
+                        <a href="/modify?caseId={{ case | case_id}}"> 修改 </a>
+                        <a href="/copy?caseId={{ case | case_id}}"> 复制</a>
+                        <a href="#" onclick="runSingleCase('{{ case | case_id}}');return false;"> 运行</a>
+                        <a href="/history_result?caseId={{ case | case_id}}">历史结果</a>
+                    </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                No data!
+            {% endif %}
+        </thead>
+    </table>
+</div>
+<div class="page">
+    {% ifnotequal curPage 1 %}
+        <a href="manage?curPage={{ curPage }}&pageType=pageUp&module={{module}}">
+            上一页
+        </a>
+    {% endifnotequal %}
+        第{{ curPage }}/{{ allPage }}页
+    {% ifnotequal curPage allPage %}
+        <a href="manage?curPage={{ curPage }}&pageType=pageDown&module={{module}}">
+            下一页
+        </a>
+    {% endifnotequal %}
+</div>
+{% include 'footer.html'%}
+</body>
