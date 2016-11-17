@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script type="text/javascript" src='/static/jquery-2.2.3.js'></script>
+</head>
+<script>
+
+
+    function addcasehtml() {
+
+    var currentPageInput = document.getElementById('curPage').value;
+    var rowNum = document.getElementById('rowNum').value;
+    var module = document.getElementById('module');
+
+    //&rowNum={{ rowNum }}
+    url ='http://'+window.location.host + '/manage?curPage=' +currentPageInput+'&module='+module.innerHTML+'&rowNum='+rowNum;
+    //alert(url);
+    window.location.href = url;
+
+    }
+
+</script>
+{% load poll_extras %}
+<body>
+
+<div class="header">
+    <div class="header_left">
+            <ul style="padding-top:0px;padding-right:0px; list-style:none;">
+                <div style="padding-left: 30px;float: left;"> 角色用户映射列表</div>
+                <li style="float:left;margin-left:10px;homepage-style:none;"><a href="add_role_user" onclick="addcasehtml();return false;" style="color:#FFFFFF">添加角色</a></li>
+            </ul>
+    </div>
+    {% include 'link_homepage.html'%}
+</div>
+<div id="data-box" class="middle">
+    <table border="1" class="table-6" >
+        <thead>
+            <tr>
+                <th>所属模块</th>
+                <th>角色</th>
+                <th>用户名</th>
+                <th>密码</th>
+                <th>运行环境</th>
+                <th>操作</th>
+            </tr>
+            {% if role_list %}
+                {% for role in role_list %}
+                    <tr>
+                    <td>{{ role.module }}</td>
+                    <td>{{ role.role }}</td>
+                    <td>{{ role.username }}</td>
+                    <td>{{ role.pwd }}</td>
+                    <td>{{ role.env }}</td>
+
+                    </tr>
+                {% endfor %}
+            {% else %}
+                No data!
+            {% endif %}
+
+        </thead>
+    </table>
+</div>
+
+
+</body>
+{% include 'footer.html'%}
+</html>

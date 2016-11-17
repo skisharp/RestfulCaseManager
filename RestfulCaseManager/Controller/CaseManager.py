@@ -19,7 +19,9 @@ from RestfulCaseManager.util import FileOperation
 
 class CaseManager(object):
 
-    caseList = []
+    #caseList = []
+    #caseIdList = []
+    #latestRunResultList = []
 
     def __init__(self):
         self.assessDB = MongodbOperation.getMongodb()
@@ -31,6 +33,7 @@ class CaseManager(object):
             self.testcases = self.assessDB["testcases"]
             self.result = self.assessDB["result_case"]
             self.module = self.assessDB["module"]
+
 
     # 得到所有模块
     def getModules(self):
@@ -53,11 +56,69 @@ class CaseManager(object):
     # order 根据添加时间进行倒序
     def getCaseList(self, module='test', order="addTime", start_index=1, row_num=10):
         try:
-            self.caseList = self.testcases.find({'module': module}).sort(order, pymongo.DESCENDING).limit(row_num).skip(start_index)
+            caseList = self.testcases.find({'module': module}).sort(order, pymongo.DESCENDING).limit(row_num).skip(start_index)
+        except:
+            logging.exception("Error:")
+        return caseList
+
+
+    def findLatestRunResultListByCaseIdList(self,caseIdList):
+
+        latestRunResultList = []
+
+        if caseIdList:
+            for case_id in caseIdList:
+                # objectId = ObjectId(caseId)
+                # FIXME get the last log from mongodb, Note: the result is a set.
+                latest_log_set = self.result.find({'caseId': case_id}).sort('runningDate', pymongo.DESCENDING).limit(1)
+                #latesRunResult=latesRunCase['result']
+                if latest_log_set :
+                    first_item = latest_log_set.next() # get the first record
+                    print first_item['result']
+                latestRunResultList.append(first_item)
+        return latestRunResultList
+
+
+    def findLatestRespnseListByCaseIdList(self, caseIdList):
+
+
+        return
+
+    def getRealList(self,case_list,latestRunResultList):
+
+        realList = []
+
+        i = 0
+        while i < len(case_list):
+            case_list[i]['result'] = latestRunResultList[i]['result']
+            case_list[i]['response'] = latestRunResultList[i]['response']
+            realList.append(case_list[i])
+            i = i + 1
+
+
+    def getCaseIdList(self, caseList):
+
+        caseIdList = []
+
+        if caseList:
+            for case in caseList:
+                #print case['_id']
+                caseIdList.append(case['_id'])
+
+        return caseIdList
+
+    '''
+     #获取caseId列表
+    def getCaseIdList(self, module='test', order="addTime", start_index=1, row_num=10):
+        try:
+            self.caseIdList = self.testcases.find({} ,{'_id':1} , {'module': module} ).sort(order, pymongo.DESCENDING).limit(row_num).skip(start_index)
         except:
             logging.exception("Error:")
 
-        return self.caseList
+        return self.caseIdList
+    '''
+
+
 
     #获取某关键字的case列表
     def getSearchCaseList(self,module='test',order="addTime",start_index=1,text="test"):
@@ -350,6 +411,8 @@ class CaseManager(object):
             logging.exception("保存运行结果出错：")
         finally:
             return batch_id
+
+
 
 
     # 得到运行的结果

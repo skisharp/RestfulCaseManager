@@ -16,6 +16,9 @@ url ='http://'+window.location.host + '/addcasehtml?module=' + sel.innerHTML ;
 window.location.href = url;
 }
 
+function latestresult() {
+
+}
 
 // 执行case
 function runCase(event){
@@ -70,6 +73,13 @@ url ='http://'+window.location.host + '/processflowhtml?module=' + module.innerH
 window.location.href = url;
 }
 
+//跳转到登录角色管理页面
+function navigateRoleUserMappereHtml() {
+    var module = document.getElementById('module');
+    url ='http://'+window.location.host + '/role_user_list?module=' + module.innerHTML;
+    window.location.href = url;
+
+}
 // 跳转到参数列表页面
 function getParams(){
 var module = document.getElementById('module');
@@ -79,19 +89,22 @@ window.location.href = url;
 
 //跳转到某一页
 function onWhichPage() {
-    //alert(document.getElementById('curPage').value);
+
+
     var currentPageInput = document.getElementById('curPage').value;
     var module = document.getElementById('module');
+    var rowNum = document.getElementById('rowNum').value;
 
-    url ='http://'+window.location.host + '/manage?curPage=' +currentPageInput+'&module='+module.innerHTML;
+    url ='http://'+window.location.host + '/manage?curPage=' +currentPageInput+'&module='+module.innerHTML+'&rowNum='+rowNum;
     //alert(url);
     window.location.href = url;
-
 }
 
 function search() {
     var searchText = document.getElementById('search').value;
-    url ='http://'+window.location.host + '/manage?&module='+module.innerHTML+'&searchText='+searchText;
+    var rowNum = document.getElementById('rowNum').value;
+
+    url ='http://'+window.location.host + '/manage?&module='+module.innerHTML+'&searchText='+searchText+'&rowNum='+rowNum;
     //alert(url);
     window.location.href = url;
     //alert(searchText);
@@ -123,6 +136,7 @@ function rowNumInput() {
                 </li>
                 <li style="float:left;margin-left:10px;homepage-style:none;color:#FFF;">共<span style="margin-left:10px;color:red;font-weight:bold;margin-right: 10px;">{{caseCount}}</span> 条测试用例 </li>
                 <li style="float:left;margin-left:10px;homepage-style:none"><a href="#" onclick="navigateProcessManageHtml();return false;" style="color:#FFFFFF" >流程管理</a></li>
+                <li style="float:left;margin-left:10px;homepage-style:none"><a href="#" onclick="navigateRoleUserMappereHtml();return false;" style="color:#FFFFFF" >登录角色管理</a></li>
                 <li style="float:left;margin-left:10px;homepage-style:none"><a href="#" onclick="getParams();return false;" style="color:#FFFFFF">参数列表</a></li>
                 <li style="float:left;margin-left:10px;homepage-style:none;"><a href="#" onclick="addcasehtml();return false;" style="color:#FFFFFF">添加case</a></li>
                 <li style="float:left;margin-left:10px;homepage-style:none;"><a href="#" onclick="runCase(event);return false;" style="color:#FFFFFF">运行</a></li>
@@ -140,7 +154,7 @@ function rowNumInput() {
     {% include 'link_homepage.html'%}
 </div>
 <div id="data-box" class="middle">
-    <table border="1" class="table-6" >
+    <table border="1" class="table-6">
         <thead>
             <tr>
                 <th>名称</th>
@@ -155,12 +169,14 @@ function rowNumInput() {
                 <th>添加时间</th>
                 <th>说明</th>
                 <th>操作</th>
+                <th>上次返回的结果</th>
+                <th>上次运行的结果</th>
             </tr>
             {% if caseList %}
                 {% for case in caseList %}
                     <tr>
                     <td>{{ case.name }}</td>
-                    <td>{{ case.url }}</td>
+                    <td>{{ case.url }}</td>`
                     <td>{{ case.data }}</td>
                     <td>{{ case.requestType }}</td>
                     <td>{{ case.expectedResult }}</td>
@@ -177,6 +193,8 @@ function rowNumInput() {
                         <a href="#" onclick="runSingleCase('{{ case | case_id}}');return false;"> 运行</a>
                         <a href="/history_result?caseId={{ case | case_id}}">历史结果</a>
                     </td>
+                    <td>{{ case.result }}</td>
+                    <td>{{ case.response }}</td>
                     </tr>
                 {% endfor %}
             {% else %}
@@ -185,23 +203,28 @@ function rowNumInput() {
         </thead>
     </table>
 </div>
-<div class="page">
 
-    <input type="text" id="rowNum" name="rowNum" value="{{ rowNum }}" size="1" onkeydown='if(event.keyCode==13){rowNumInput();}'/>
+<div style="display: table; width: 100%;">
+    <div style="display: table-cell;">
+        每页显示<input align="left" type="text" id="rowNum" name="rowNum" value="{{ rowNum }}" size="1" onkeydown='if(event.keyCode==13){rowNumInput();}'/>条
+    </div>
 
+    <div style="display: table-cell; text-align: right;">
     {% ifnotequal curPage 1 %}
-        <a href="manage?curPage={{ curPage }}&pageType=pageUp&module={{module}}">
+        <a href="manage?curPage={{ curPage }}&pageType=pageUp&module={{module}}&rowNum={{ rowNum }}">
             上一页
         </a>
     {% endifnotequal %}
 
     第<input type="text" id="curPage" name="curPage" value="{{ curPage }}" size="1" onkeydown='if(event.keyCode==13){onWhichPage();}'/>/{{ allPage }}页
     {% ifnotequal curPage allPage %}
-        <a href="manage?curPage={{ curPage }}&pageType=pageDown&module={{module}}">
+        <a href="manage?curPage={{ curPage }}&pageType=pageDown&module={{module}}&rowNum={{ rowNum }}">
             下一页
         </a>
     {% endifnotequal %}
-
+    </div>
 </div>
+
+
 {% include 'footer.html'%}
 </body>
