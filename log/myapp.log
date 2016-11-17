@@ -1,9 +1,8 @@
-Fri, 11 Nov 2016 11:45:38 MongodbOperation.py[line:14] INFO Connect to mogodb success!
-Fri, 11 Nov 2016 11:45:38 MongodbOperation.py[line:14] INFO Connect to mogodb success!
-Fri, 11 Nov 2016 11:45:38 MongodbOperation.py[line:14] INFO Connect to mogodb success!
-Fri, 11 Nov 2016 11:45:38 MongodbOperation.py[line:14] INFO Connect to mogodb success!
-Fri, 11 Nov 2016 11:45:38 MongodbOperation.py[line:14] INFO Connect to mogodb success!
-Fri, 11 Nov 2016 11:45:38 MongodbOperation.py[line:14] INFO Connect to mogodb success!
-Fri, 11 Nov 2016 11:45:38 MongodbOperation.py[line:14] INFO Connect to mogodb success!
-Fri, 11 Nov 2016 11:45:38 utils.py[line:89] DEBUG (0.000) QUERY = "\n            SELECT name, type FROM sqlite_master\n            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'\n            ORDER BY name" - PARAMS = (); args=None
-Fri, 11 Nov 2016 11:45:38 utils.py[line:89] DEBUG (0.000) QUERY = u'SELECT "django_migrations"."app", "django_migrations"."name" FROM "django_migrations"' - PARAMS = (); args=()
+Wed, 09 Nov 2016 13:50:11 MongodbOperation.py[line:14] INFO Connect to mogodb success!
+Wed, 09 Nov 2016 13:50:11 MongodbOperation.py[line:14] INFO Connect to mogodb success!
+Wed, 09 Nov 2016 13:50:11 MongodbOperation.py[line:14] INFO Connect to mogodb success!
+Wed, 09 Nov 2016 13:50:11 MongodbOperation.py[line:14] INFO Connect to mogodb success!
+Wed, 09 Nov 2016 13:50:11 MongodbOperation.py[line:14] INFO Connect to mogodb success!
+Wed, 09 Nov 2016 13:50:11 MongodbOperation.py[line:14] INFO Connect to mogodb success!
+Wed, 09 Nov 2016 13:50:11 utils.py[line:89] DEBUG (0.000) QUERY = "\n            SELECT name, type FROM sqlite_master\n            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'\n            ORDER BY name" - PARAMS = (); args=None
+Wed, 09 Nov 2016 13:50:11 utils.py[line:89] DEBUG (0.000) QUERY = u'SELECT "django_migrations"."app", "django_migrations"."name" FROM "django_migrations"' - PARAMS = (); args=()

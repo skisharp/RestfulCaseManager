@@ -13,8 +13,3 @@ def case_id(value):
 @register.filter("str_batch_id")
 def str_batch_id(value):
     return str(value)
-
-
-@register.filter("role_id")
-def case_id(value):
-    return str(value['_id'])

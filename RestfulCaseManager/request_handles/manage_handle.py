@@ -7,7 +7,6 @@ from django.shortcuts import render_to_response
 from django import template
 
 from RestfulCaseManager.Controller.CaseManager import CaseManager
-
 from RestfulCaseManager.Controller.RoleUserMapper import RoleUserMapper
 from RestfulCaseManager.Model.Env import Env
 
@@ -19,9 +18,7 @@ caseManager = CaseManager()
 def add_case_html(request):
     module_list = caseManager.getModules()
 
-
     module_default = request.GET.get('module')
-
 
     roleUserMapper = RoleUserMapper.getRoleUserDict(request.GET.get("module"))
     roles = RoleUserMapper.Roles
@@ -29,26 +26,6 @@ def add_case_html(request):
                               {"module_list": module_list,
                                "module_default": module_default,
                                "roles": roles})
-
-#管理测试角色用户名密码 以列表的方式进行 右上角有添加角色用户密码
-def role_user_list(request):
-
-    role_list ={
-        "module": "Mtool",
-        "role": "Manager",
-        "username": "jingwang",
-        "pwd": "jingwangpgmtest644",
-        "env": "8030",
-    }
-
-    return render_to_response('role_user_list.html',{"role_list":role_list})
-
-#添加测试角色用户名密码
-def add_role_user_html(request):
-
-    return render_to_response('add_role_user.html')
-
-
 
 # 添加测试用例到DB
 def addCase(request):

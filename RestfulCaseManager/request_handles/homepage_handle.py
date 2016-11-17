@@ -5,17 +5,14 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django import template
 from mongoengine.errors import DoesNotExist
+
 from RestfulCaseManager.Controller.CaseManager import CaseManager
-from RestfulCaseManager.Controller.HistoryManager import HistoryManager
 from RestfulCaseManager.Model import Paramter
 from RestfulCaseManager.Model import Process
 from RestfulCaseManager.Model import Module
 
-
 register = template.Library()
 caseManager = CaseManager()
-historyManager = HistoryManager()
-
 
 
 # home page
@@ -49,7 +46,7 @@ def save_module_db(request):
     module.init_module()
 
     return HttpResponse("<script language=javascript>alert('success');"
-                        "url ='http://'+window.location.host + '/index/'; "
+                        "url ='http://'+window.location.host + '/homepage/'; "
                         "window.location.href=url;</script>")
 
 
@@ -67,6 +64,8 @@ def paramtersListHtml(request):
 # 跳转到管理测试用例
 def manageCase(request):
     getDict = request.GET
+
+    print request.GET
 
     try:
         curPage = int(request.GET.get('curPage', '1'))
@@ -95,22 +94,17 @@ def manageCase(request):
             if "order" in getDict.keys():
                 caseList = caseManager.getCaseList(request.GET.get("module"), request.GET.get("order"),request.GET.get('rowNum'))
             else:
-                import copy
                 caseList = caseManager.getCaseList(module=request.GET.get("module"), start_index=start_pos, row_num=rowNum)
-                caseListCopy = caseList.__deepcopy__(caseList)
-                #caseIdList = latelesthistory.getCaseIdList()
-                #caseIdList = caseManager.getCaseIdList(module=request.GET.get("module"), start_index=start_pos, row_num=rowNum)
         else:
             caseList = caseManager.getCaseList()
     else:
         print "homepage_handle"+request.GET.get("module")+request.GET.get('searchText')
         caseList = caseManager.getSearchCaseList(module=request.GET.get("module"), start_index=start_pos, text=request.GET.get('searchText'))
-        rowNum=100
 
-
-    caseIdList = caseManager.getCaseIdList(caseList)
-
-    latesRunResultList = caseManager.findLatestRunResultListByCaseIdList(caseIdList)
+    caseIdList = []
+    if caseList:
+        for case in caseList:
+            caseIdList.append(case['_id'])
 
 
     if caseList:
@@ -121,11 +115,8 @@ def manageCase(request):
     if remainPost > 0:
         allPage += 1
 
-    # 'latestRunResultList':latestRunResultList,
-    # 'latestRespnseList':latestRespnseList,
-
     return render_to_response('managecase.html',
-                              {'caseList': caseListCopy,
+                              {'caseList': caseList,
                                "caseCount": caseCount,
                                'curPage': curPage,
                                'allPage': allPage,

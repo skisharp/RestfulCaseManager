@@ -13,7 +13,7 @@
 	_height:480px; min-height:480px;
 	font-family: 微软雅黑;
 }
-
+.page {margin-top:10px;float:right;padding-right:20px;}
 .table-6 thead th {
 background-color: rgb(128, 102, 160);
 color: #fff;

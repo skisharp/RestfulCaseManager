@@ -20,7 +20,6 @@ from RestfulCaseManager.util import FileOperation
 class CaseManager(object):
 
     caseList = []
-    caseIdList = []
 
     def __init__(self):
         self.assessDB = MongodbOperation.getMongodb()
@@ -59,46 +58,6 @@ class CaseManager(object):
             logging.exception("Error:")
 
         return self.caseList
-
-
-    def findLatestRunResultListByCaseIdList(self, caseIdList):
-        latestRunResultList = []
-        if caseIdList:
-            for caseId in caseIdList:
-                objectId = ObjectId(caseId)
-                latesRunResult = self.result.find({'caseId': objectId}).sort('runningDate', pymongo.DESCENDING).limit(1)
-                latestRunResultList.append(latesRunResult)
-
-        return self.latestRunResultList
-
-
-    def findLatestLatestRespnseListById(self, caseid):
-
-
-        return
-
-
-    def getCaseIdList(self, caseList):
-        caseIdList = []
-        if caseList:
-            for case in caseList:
-                print case['_id']
-                caseIdList.append(case['_id'])
-
-        return caseIdList
-
-    '''
-     #获取caseId列表
-    def getCaseIdList(self, module='test', order="addTime", start_index=1, row_num=10):
-        try:
-            self.caseIdList = self.testcases.find({} ,{'_id':1} , {'module': module} ).sort(order, pymongo.DESCENDING).limit(row_num).skip(start_index)
-        except:
-            logging.exception("Error:")
-
-        return self.caseIdList
-    '''
-
-
 
     #获取某关键字的case列表
     def getSearchCaseList(self,module='test',order="addTime",start_index=1,text="test"):
@@ -391,8 +350,6 @@ class CaseManager(object):
             logging.exception("保存运行结果出错：")
         finally:
             return batch_id
-
-
 
 
     # 得到运行的结果

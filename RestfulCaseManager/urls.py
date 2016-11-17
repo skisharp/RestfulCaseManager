@@ -25,7 +25,6 @@ urlpatterns = [
 ]
 '''
 
-
 urlpatterns = patterns("",
             (r'^$', homepage_handle.homepage),
             (r'^index', homepage_handle.homepage),
@@ -57,8 +56,6 @@ urlpatterns = patterns("",
             (r'^updatecase/$', manage_handle.updateCase),
             (r'^export/$', manage_handle.exportCaseTofile),
             (r'^show_case_result', manage_handle.show_case_result),
-            (r'^role_user_list',manage_handle.role_user_list),
-            (r'^add_role_user',manage_handle.add_role_user_html),
 
             (r'^add_paramter/$', patamter.addParamterHtml),
             (r'^add_paramter_todb/$', patamter.addParameerToDB),
@@ -75,8 +72,6 @@ urlpatterns = patterns("",
             (r'^testajax', RequestHandler.index),
             (r'^returnjson', RequestHandler.returnjson),
             (r'^zrx', RequestHandler.zrx),
-
-
 )
 
 
